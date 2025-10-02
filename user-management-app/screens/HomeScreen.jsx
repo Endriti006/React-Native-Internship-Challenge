@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
-import { FlatList, TouchableOpacity, View, Text, StyleSheet, TextInput, ActivityIndicator, SafeAreaView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, selectFilteredUsers, selectUsersState, setSearch } from '../store/store';
 
 export default function HomeScreen() {
@@ -33,7 +34,7 @@ export default function HomeScreen() {
           <Text style={styles.cardMeta}>{item.company?.name}</Text>
         </View>
         <LinearGradient colors={['#9B5CF6', '#4C6EF5']} start={[0, 0]} end={[1, 1]} style={styles.chevron}>
-          <Text style={styles.chevronLabel}>›</Text>
+          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
         </LinearGradient>
       </TouchableOpacity>
     );
@@ -89,9 +90,15 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         ) : null}
-        <TouchableOpacity style={styles.fab} activeOpacity={0.9} onPress={() => router.push({ pathname: '/user/manage', params: { mode: 'create' } })}>
-          <LinearGradient colors={['#9B5CF6', '#4C6EF5']} start={[0, 0]} end={[1, 1]} style={styles.fabInner}>
-            <Text style={styles.fabLabel}>+</Text>
+        
+        {/* Add User FAB */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.fab}
+          onPress={() => router.push({ pathname: '/user/manage', params: { mode: 'add' } })}
+        >
+          <LinearGradient colors={['#4C6EF5', '#9B5CF6']} start={[0, 0]} end={[1, 1]} style={styles.fabInner}>
+            <Ionicons name="add" size={32} color="#FFFFFF" />
           </LinearGradient>
         </TouchableOpacity>
       </SafeAreaView>
@@ -123,7 +130,8 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     gap: 12,
-    marginBottom: 24
+    marginBottom: 24,
+    marginTop: 40
   },
   heading: {
     fontSize: 32,
@@ -185,16 +193,11 @@ const styles = StyleSheet.create({
     marginTop: 4
   },
   chevron: {
-    height: 32,
-    width: 32,
-    borderRadius: 16,
+    height: 36,
+    width: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  chevronLabel: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    lineHeight: 24
   },
   emptyState: {
     marginTop: 64,
