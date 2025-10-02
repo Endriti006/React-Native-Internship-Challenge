@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form';
+import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
-import { addUser, updateUser, selectUserById } from '../store/store';
+import { addUser, selectUserById, updateUser } from '../store/store';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -78,14 +78,15 @@ export default function ManageUserScreen() {
 
   if (mode === 'edit' && !user) {
     return (
-      <LinearGradient colors={['#1B3A8A', '#4C6EF5']} style={styles.missingContainer}>
+      <View style={styles.missingContainer}>
         <View style={styles.missingCard}>
+          <Ionicons name="alert-circle-outline" size={48} color="#6B7280" />
           <Text style={styles.missingTitle}>User not available</Text>
           <TouchableOpacity style={styles.missingButton} onPress={() => router.replace('/') }>
             <Text style={styles.missingButtonLabel}>Back to directory</Text>
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
@@ -119,11 +120,17 @@ export default function ManageUserScreen() {
   const ctaLabel = mode === 'edit' ? 'Save changes' : 'Create profile';
 
   return (
-    <LinearGradient colors={['#1B3A8A', '#4C6EF5']} style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>Craft a complete profile so your team always has the latest details.</Text>
+          <View style={styles.header}>
+            <Text style={styles.title}>{title}</Text>
+            <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.subtitle}>Fill in the details below</Text>
+          
           <View style={styles.formCard}>
             {fields.map(field => (
               <View key={field.name} style={styles.fieldBlock}>
@@ -137,7 +144,7 @@ export default function ManageUserScreen() {
                       onChangeText={onChange}
                       onBlur={onBlur}
                       placeholder={field.placeholder}
-                      placeholderTextColor="rgba(255,255,255,0.5)"
+                      placeholderTextColor="#9CA3AF"
                       style={[styles.input, errors[field.name] ? styles.inputError : null]}
                       keyboardType={field.keyboardType || 'default'}
                       autoCapitalize={field.autoCapitalize || 'sentences'}
@@ -147,131 +154,146 @@ export default function ManageUserScreen() {
                 {errors[field.name] ? <Text style={styles.errorText}>{errors[field.name].message}</Text> : null}
               </View>
             ))}
+            
             <TouchableOpacity
-              activeOpacity={0.9}
+              activeOpacity={0.8}
               style={[styles.submitButton, isSubmitting ? styles.submitButtonDisabled : null]}
               onPress={handleSubmit(onSubmit)}
               disabled={isSubmitting}
             >
               <Text style={styles.submitLabel}>{ctaLabel}</Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.9} style={styles.cancelButton} onPress={() => router.back()}>
+            
+            <TouchableOpacity activeOpacity={0.8} style={styles.cancelButton} onPress={() => router.back()}>
               <Text style={styles.cancelLabel}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#F9FAFB'
   },
   flex: {
     flex: 1
   },
   scrollContent: {
-    padding: 24,
+    padding: 16,
     paddingBottom: 48
   },
-  title: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: '#FFFFFF',
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 40,
     marginBottom: 8
   },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#111827'
+  },
+  closeButton: {
+    padding: 8
+  },
   subtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
-    lineHeight: 24,
+    fontSize: 15,
+    color: '#6B7280',
     marginBottom: 24
   },
   formCard: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 28,
-    padding: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
     gap: 18,
-    shadowColor: '#000000',
-    shadowOpacity: 0.2,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 }
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
   },
   fieldBlock: {
-    gap: 10
+    gap: 8
   },
   fieldLabel: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 15,
+    color: '#374151',
+    fontSize: 14,
     fontWeight: '600'
   },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    color: '#FFFFFF',
-    fontSize: 16
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    color: '#111827',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
   },
   inputError: {
-    borderWidth: 1,
-    borderColor: 'rgba(224,49,49,0.7)'
+    borderColor: '#DC2626'
   },
   errorText: {
-    color: '#FFB4AB',
+    color: '#DC2626',
     fontSize: 13
   },
   submitButton: {
     marginTop: 12,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingVertical: 16,
+    backgroundColor: '#4F46E5',
+    borderRadius: 10,
+    paddingVertical: 14,
     alignItems: 'center'
   },
   submitButtonDisabled: {
     opacity: 0.6
   },
   submitLabel: {
-    color: '#4C6EF5',
-    fontSize: 17,
-    fontWeight: '700'
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600'
   },
   cancelButton: {
     marginTop: 8,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingVertical: 12
   },
   cancelLabel: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#6B7280',
+    fontSize: 15,
     fontWeight: '600'
   },
   missingContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#F9FAFB',
+    padding: 24
   },
   missingCard: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 32,
     paddingVertical: 48,
-    borderRadius: 24,
+    borderRadius: 16,
     alignItems: 'center',
-    gap: 16
+    gap: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
   },
   missingTitle: {
-    color: '#FFFFFF',
-    fontSize: 20,
+    color: '#111827',
+    fontSize: 18,
     fontWeight: '600'
   },
   missingButton: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
+    backgroundColor: '#4F46E5',
+    paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 18
+    borderRadius: 8
   },
   missingButtonLabel: {
-    color: '#4C6EF5',
+    color: '#FFFFFF',
     fontWeight: '600'
   }
 });

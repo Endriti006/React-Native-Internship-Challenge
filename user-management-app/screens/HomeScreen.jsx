@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -24,18 +23,16 @@ export default function HomeScreen() {
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={styles.card} activeOpacity={0.85} onPress={() => router.push(`/user/${item.id}`)}>
-        <LinearGradient colors={['#4C6EF5', '#9B5CF6']} start={[0, 0]} end={[1, 1]} style={styles.avatar}>
+      <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/user/${item.id}`)}>
+        <View style={styles.avatar}>
           <Text style={styles.avatarLabel}>{item.name.charAt(0)}</Text>
-        </LinearGradient>
+        </View>
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>{item.name}</Text>
           <Text style={styles.cardSubtitle}>{item.email}</Text>
           <Text style={styles.cardMeta}>{item.company?.name}</Text>
         </View>
-        <LinearGradient colors={['#9B5CF6', '#4C6EF5']} start={[0, 0]} end={[1, 1]} style={styles.chevron}>
-          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
-        </LinearGradient>
+        <Ionicons name="chevron-forward" size={24} color="#9CA3AF" />
       </TouchableOpacity>
     );
   };
@@ -43,13 +40,14 @@ export default function HomeScreen() {
   const listHeader = (
     <View style={styles.headerSection}>
       <Text style={styles.heading}>Team Directory</Text>
-      <Text style={styles.subheading}>Discover teammates, explore full details, and keep your roster up to date.</Text>
+      <Text style={styles.subheading}>Manage your team members</Text>
       <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#6B7280" style={styles.searchIcon} />
         <TextInput
           value={search}
           onChangeText={handleSearch}
           placeholder="Search by name or email"
-          placeholderTextColor="rgba(255,255,255,0.6)"
+          placeholderTextColor="#9CA3AF"
           style={styles.searchInput}
         />
       </View>
@@ -58,30 +56,28 @@ export default function HomeScreen() {
 
   const listEmpty = (
     <View style={styles.emptyState}>
+      <Ionicons name="people-outline" size={64} color="#D1D5DB" />
       <Text style={styles.emptyTitle}>No teammates yet</Text>
-      <Text style={styles.emptySubtitle}>Add a new teammate to see them appear here instantly.</Text>
+      <Text style={styles.emptySubtitle}>Add a new teammate to get started</Text>
     </View>
   );
 
   return (
-    <LinearGradient colors={['#F7F8FA', '#FFFFFF']} style={styles.background}>
+    <View style={styles.background}>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.topGradient}>
-          <LinearGradient colors={['#1B3A8A', '#4C6EF5']} start={[0, 0]} end={[1, 1]} style={styles.gradientOverlay}>
-            <FlatList
-              data={users}
-              keyExtractor={item => item.id}
-              renderItem={renderItem}
-              contentContainerStyle={styles.listContent}
-              ListHeaderComponent={listHeader}
-              ListEmptyComponent={status === 'succeeded' ? listEmpty : null}
-              ListFooterComponent={status === 'loading' ? <ActivityIndicator size="large" color="#FFFFFF" style={styles.loader} /> : null}
-              refreshing={status === 'loading'}
-              onRefresh={() => dispatch(fetchUsers())}
-              showsVerticalScrollIndicator={false}
-            />
-          </LinearGradient>
-        </View>
+        <FlatList
+          data={users}
+          keyExtractor={item => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={listHeader}
+          ListEmptyComponent={status === 'succeeded' ? listEmpty : null}
+          ListFooterComponent={status === 'loading' ? <ActivityIndicator size="large" color="#4F46E5" style={styles.loader} /> : null}
+          refreshing={status === 'loading'}
+          onRefresh={() => dispatch(fetchUsers())}
+          showsVerticalScrollIndicator={false}
+        />
+        
         {error ? (
           <View style={styles.errorBanner}>
             <Text style={styles.errorText}>{error}</Text>
@@ -91,185 +87,172 @@ export default function HomeScreen() {
           </View>
         ) : null}
         
-        {/* Add User FAB */}
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.8}
           style={styles.fab}
           onPress={() => router.push({ pathname: '/user/manage', params: { mode: 'add' } })}
         >
-          <LinearGradient colors={['#4C6EF5', '#9B5CF6']} start={[0, 0]} end={[1, 1]} style={styles.fabInner}>
-            <Ionicons name="add" size={32} color="#FFFFFF" />
-          </LinearGradient>
+          <Ionicons name="add" size={28} color="#FFFFFF" />
         </TouchableOpacity>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#F9FAFB'
   },
   safeArea: {
     flex: 1
   },
-  topGradient: {
-    flex: 1,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    overflow: 'hidden'
-  },
-  gradientOverlay: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 120
-  },
   listContent: {
-    paddingBottom: 32
+    padding: 16,
+    paddingBottom: 20
   },
   headerSection: {
-    gap: 12,
     marginBottom: 24,
-    marginTop: 40
+    paddingTop: 8
   },
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#FFFFFF'
+    color: '#111827',
+    marginBottom: 4,
+    marginTop: 30
   },
   subheading: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
-    lineHeight: 24
+    color: '#6B7280',
+    marginBottom: 20
   },
   searchContainer: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 14
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
+  },
+  searchIcon: {
+    marginRight: 8
   },
   searchInput: {
-    color: '#FFFFFF',
+    flex: 1,
+    color: '#111827',
     fontSize: 16
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     padding: 16,
-    marginBottom: 16,
-    gap: 16
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
   },
   avatar: {
-    height: 56,
-    width: 56,
-    borderRadius: 28,
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    backgroundColor: '#4F46E5',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginRight: 12
   },
   avatarLabel: {
     color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '700'
+    fontSize: 20,
+    fontWeight: '600'
   },
   cardContent: {
     flex: 1
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: '600',
-    color: '#FFFFFF'
+    color: '#111827',
+    marginBottom: 2
   },
   cardSubtitle: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.75)',
-    marginTop: 4
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 2
   },
   cardMeta: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.6)',
-    marginTop: 4
-  },
-  chevron: {
-    height: 36,
-    width: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center'
+    fontSize: 13,
+    color: '#9CA3AF'
   },
   emptyState: {
-    marginTop: 64,
+    marginTop: 80,
     alignItems: 'center',
-    gap: 8
+    paddingHorizontal: 32
   },
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FFFFFF'
+    color: '#111827',
+    marginTop: 16,
+    marginBottom: 8
   },
   emptySubtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
-    textAlign: 'center',
-    paddingHorizontal: 32,
-    lineHeight: 22
+    fontSize: 15,
+    color: '#6B7280',
+    textAlign: 'center'
   },
   loader: {
     marginTop: 24
   },
   errorBanner: {
     position: 'absolute',
-    left: 24,
-    right: 24,
+    left: 16,
+    right: 16,
     bottom: 96,
-    backgroundColor: 'rgba(224,49,49,0.95)',
+    backgroundColor: '#FEE2E2',
     padding: 16,
-    borderRadius: 18,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#FCA5A5'
   },
   errorText: {
-    color: '#FFFFFF',
+    color: '#DC2626',
     fontSize: 14,
     flex: 1,
-    marginRight: 12
+    marginRight: 12,
+    fontWeight: '500'
   },
   retryButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#DC2626',
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 16
+    paddingVertical: 8,
+    borderRadius: 8
   },
   retryLabel: {
-    color: '#E03131',
-    fontWeight: '600'
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14
   },
   fab: {
     position: 'absolute',
     bottom: 32,
-    right: 24,
-    height: 64,
-    width: 64,
-    borderRadius: 32,
-    elevation: 6,
-    shadowColor: '#000000',
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 }
-  },
-  fabInner: {
-    flex: 1,
-    borderRadius: 32,
+    right: 16,
+    height: 56,
+    width: 56,
+    borderRadius: 28,
+    backgroundColor: '#4F46E5',
     alignItems: 'center',
-    justifyContent: 'center'
-  },
-  fabLabel: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '700',
-    marginTop: -4
+    justifyContent: 'center',
+    shadowColor: '#000000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4
   }
 });

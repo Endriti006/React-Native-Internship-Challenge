@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo } from 'react';
+import { Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUserById, deleteUser } from '../store/store';
-import { Ionicons } from '@expo/vector-icons';
+import { deleteUser, selectUserById } from '../store/store';
 
 export default function UserDetailsScreen() {
   const router = useRouter();
@@ -75,9 +75,8 @@ export default function UserDetailsScreen() {
 
   return (
     <LinearGradient colors={['#F8F9FE', '#FFFFFF']} style={styles.container}>
-      {/* Enhanced Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => router.replace('/')}>
           <LinearGradient colors={['#4C6EF5', '#9B5CF6']} start={[0, 0]} end={[1, 1]} style={styles.backButtonInner}>
             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </LinearGradient>
@@ -96,7 +95,7 @@ export default function UserDetailsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Enhanced Hero Card */}
+   
         <View style={styles.heroWrapper}>
           <LinearGradient colors={['#4C6EF5', '#7C3AED', '#9B5CF6']} start={[0, 0]} end={[1, 1]} style={styles.heroCard}>
             <View style={styles.heroPattern}>
@@ -124,7 +123,7 @@ export default function UserDetailsScreen() {
           </LinearGradient>
         </View>
 
-        {/* Enhanced Contact Section */}
+
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="call-outline" size={24} color="#4C6EF5" style={styles.sectionIconElement} />
@@ -175,7 +174,7 @@ export default function UserDetailsScreen() {
           )}
         </View>
 
-        {/* Enhanced Address Section */}
+
         {addressText && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -193,7 +192,7 @@ export default function UserDetailsScreen() {
           </View>
         )}
 
-        {/* Enhanced Action Buttons */}
+
         <View style={styles.actionsSection}>
           <TouchableOpacity
             style={styles.actionButtonPrimary}
@@ -218,7 +217,6 @@ export default function UserDetailsScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Footer Spacing */}
         <View style={styles.footerSpace} />
       </ScrollView>
     </LinearGradient>
